@@ -22,7 +22,6 @@ const database_uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONG
 
 mongoose.connect(database_uri, clientOptions).then((v) => console.log(`Connected - ${process.env.MONGO_USER}`)).catch(() => console.error("Error!"));
 
-
 const logger = (req: any, res: any, next: any) => {
 
     let current_datetime = new Date();
@@ -73,5 +72,5 @@ apiV1Router.use('/dev', devRouter);
 // Server setup
 app.listen(process.env.PORT, () => {
     console.log(`TypeScript with Express 
-         http://localhost:${process.env.PORT}/`);
+         PORT: ${process.env.PORT}`);
 });
