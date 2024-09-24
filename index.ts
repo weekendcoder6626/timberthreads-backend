@@ -69,6 +69,10 @@ apiV1Router.use('/user', userRouter);
 apiV1Router.use('/product', productRouter);
 apiV1Router.use('/dev', devRouter);
 
+app.get("/", (_, res) => {
+  res.send("Welcome to TimberThreads")
+})
+
 // Server setup
 app.listen(process.env.PORT, () => {
     console.log(`TypeScript with Express 
