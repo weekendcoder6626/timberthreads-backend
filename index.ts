@@ -78,3 +78,5 @@ app.listen(process.env.PORT, () => {
     console.log(`TypeScript with Express 
          PORT: ${process.env.PORT}`);
 });
+
+export default app;
