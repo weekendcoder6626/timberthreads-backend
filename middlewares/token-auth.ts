@@ -7,8 +7,6 @@ function tokenAuth(req: any, res: any, next: any) {
 
     const errorRes: ErrorResponse = { status: 400, message: "", payload: {error: {}} }
 
-    // console.log(req.url);
-
     if(req.header("ignore-token") || req.url === "/") {
 
         next();

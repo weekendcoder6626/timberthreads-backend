@@ -2,7 +2,8 @@ import { productModel } from "../database/models/product";
 import { userModel } from "../database/models/user";
 import { Cart } from "../types/DBTypes/Cart.type";
 import { ProductOverviewType } from "../types/DBTypes/Product.type";
-import { ProductDetailedWithIDType } from "../types/ProductWithID.type";
+import { User } from "../types/DBTypes/User.type";
+import { ProductDetailedWithIDType, WithIDType } from "../types/ProductWithID.type";
 import { ErrorResponse } from "../types/response";
 import { detailedToOverviewProductMapping } from "./mappings/product.mapping";
 
@@ -61,7 +62,7 @@ export const checkUser = async (email: string) => {
 
     return {
         valid: true,
-        userDoc: { ...userDoc?.toObject(), cart: fullCart, wishlist: fullWishlist }
+        userDoc: { ...userDoc?.toObject(), cart: fullCart, wishlist: fullWishlist, isFirstLogin: userDoc.isFirstLogin === 1 ? true : false, _id: userDoc._id.toString() } as WithIDType<User>
     }
 
 }

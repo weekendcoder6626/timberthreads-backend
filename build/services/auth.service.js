@@ -17,6 +17,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const session_1 = require("../database/models/session");
 const user_1 = require("../database/models/user");
+const checks_1 = require("./checks");
 const registerService = (username, phNumber, email, password, profilePic) => __awaiter(void 0, void 0, void 0, function* () {
     const errorRes = { status: 400, message: "", payload: { error: {} } };
     const successRes = { status: 200, message: "", payload: {} };
@@ -53,7 +54,14 @@ const loginService = (email, password) => __awaiter(void 0, void 0, void 0, func
         return errorRes;
     }
     try {
-        const user = yield user_1.userModel.findOne({ email });
+        // const user = await userModel.findOne({ email });
+        const isUser = yield (0, checks_1.checkUser)(email);
+        if (!isUser.valid) {
+            errorRes.status = 400;
+            errorRes.message = "User not found";
+            return errorRes;
+        }
+        const user = isUser.userDoc;
         if (!user || !user.password) {
             errorRes.status = 400;
             errorRes.message = "User not found";
@@ -71,11 +79,11 @@ const loginService = (email, password) => __awaiter(void 0, void 0, void 0, func
         };
         const token = jsonwebtoken_1.default.sign(data, jwtSecretKey);
         yield (new session_1.sessionModel({ token, email })).save();
-        const payload = Object.assign(Object.assign({}, user.toObject()), { token });
+        const payload = Object.assign(Object.assign({}, user), { token });
         successRes.status = 200;
         successRes.message = "Login Succesful";
         successRes.payload = payload;
-        if (user.isFirstLogin === 1) {
+        if (user.isFirstLogin) {
             yield user_1.userModel.updateOne({ email }, { isFirstLogin: 0 }).exec();
         }
         return successRes;

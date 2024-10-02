@@ -8,7 +8,6 @@ const user_1 = require("../database/models/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function tokenAuth(req, res, next) {
     const errorRes = { status: 400, message: "", payload: { error: {} } };
-    // console.log(req.url);
     if (req.header("ignore-token") || req.url === "/") {
         next();
         return;

@@ -34,7 +34,7 @@ const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* ()
             profilePic: userDoc.profilePic,
             wishlist: userDoc.wishlist || undefined,
             cart: userDoc.cart ? userDoc.cart.map((doc) => ({ product: doc.product, quantity: doc.quantity })) : undefined,
-            isFirstLogin: userDoc.isFirstLogin === 1,
+            isFirstLogin: userDoc.isFirstLogin,
             phNumber: userDoc.phNumber
         };
         return successRes;

@@ -1,14 +1,15 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import {sessionModel} from '../database/models/session';
-import {userModel} from '../database/models/user';
+import { sessionModel } from '../database/models/session';
+import { userModel } from '../database/models/user';
 import { ErrorResponse, SuccessResponse } from '../types/response';
 import { CurrentUser } from '../types/DBTypes/User.type';
+import { checkUser } from './checks';
 
 export const registerService = async (username: string, phNumber: string, email: string, password: string, profilePic?: string) => {
 
-    const errorRes: ErrorResponse = { status: 400, message: "", payload: {error: {}} }
+    const errorRes: ErrorResponse = { status: 400, message: "", payload: { error: {} } }
     const successRes: SuccessResponse = { status: 200, message: "", payload: {} }
 
     try {
@@ -46,7 +47,7 @@ export const registerService = async (username: string, phNumber: string, email:
 
 export const loginService = async (email: string, password: string) => {
 
-    const errorRes: ErrorResponse = { status: 400, message: "", payload: {error: {}} }
+    const errorRes: ErrorResponse = { status: 400, message: "", payload: { error: {} } }
     const successRes: SuccessResponse<CurrentUser> = { status: 200, message: "" }
 
     if (!email || !password) {
@@ -58,7 +59,18 @@ export const loginService = async (email: string, password: string) => {
 
     try {
 
-        const user = await userModel.findOne({ email });
+        // const user = await userModel.findOne({ email });
+
+        const isUser = await checkUser(email);
+
+        if (!isUser.valid) {
+
+            errorRes.status = 400;
+            errorRes.message = "User not found";
+            return errorRes;
+        }
+
+        const user = isUser.userDoc;
 
         if (!user || !user.password) {
 
@@ -85,15 +97,15 @@ export const loginService = async (email: string, password: string) => {
 
         await (new sessionModel({ token, email })).save();
 
-        const payload = { ...user.toObject(), token } as CurrentUser
+        const payload = { ...user, token } as CurrentUser
 
         successRes.status = 200
         successRes.message = "Login Succesful"
         successRes.payload = payload
 
-        if (user.isFirstLogin === 1) {
+        if (user.isFirstLogin) {
 
-            await userModel.updateOne({email}, {isFirstLogin: 0}).exec();
+            await userModel.updateOne({ email }, { isFirstLogin: 0 }).exec();
         }
 
         return successRes;
@@ -109,7 +121,7 @@ export const loginService = async (email: string, password: string) => {
 
 export const logoutService = async (token: string) => {
 
-    const errorRes: ErrorResponse = { status: 400, message: "", payload: {error: {}} }
+    const errorRes: ErrorResponse = { status: 400, message: "", payload: { error: {} } }
     const successRes: SuccessResponse = { status: 200, message: "", payload: {} }
 
     if (!token) {

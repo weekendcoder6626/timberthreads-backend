@@ -47,7 +47,7 @@ const checkUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
     }
     return {
         valid: true,
-        userDoc: Object.assign(Object.assign({}, userDoc === null || userDoc === void 0 ? void 0 : userDoc.toObject()), { cart: fullCart, wishlist: fullWishlist })
+        userDoc: Object.assign(Object.assign({}, userDoc === null || userDoc === void 0 ? void 0 : userDoc.toObject()), { cart: fullCart, wishlist: fullWishlist, isFirstLogin: userDoc.isFirstLogin === 1 ? true : false, _id: userDoc._id.toString() })
     };
 });
 exports.checkUser = checkUser;

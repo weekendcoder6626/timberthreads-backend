@@ -29,7 +29,7 @@ export const getUserByEmail = async (email: string) => {
             profilePic: userDoc.profilePic!,
             wishlist:  userDoc.wishlist || undefined,
             cart: userDoc.cart ? userDoc.cart.map((doc) => ({ product: doc.product, quantity: doc.quantity })) : undefined,
-            isFirstLogin: userDoc.isFirstLogin! === 1,
+            isFirstLogin: userDoc.isFirstLogin,
             phNumber: userDoc.phNumber!
         }
 
@@ -93,7 +93,7 @@ export async function addProductToWishList(productId: string, email: string) {
         if (!isProd.valid)
             return isProd.res!;
 
-        const userWishlist = isUser.userDoc!.wishlist.map((prod) => prod.productId);
+        const userWishlist = isUser.userDoc!.wishlist!.map((prod) => prod.productId);
         const newWishlist: string[] = [];
 
         if (!userWishlist) {
@@ -148,7 +148,7 @@ export async function removeProductFromWishList(productId: string, email: string
         if (!isProd.valid)
             return isProd.res!;
 
-        const userWishlist = isUser.userDoc!.wishlist.map((prod) => prod.productId);
+        const userWishlist = isUser.userDoc!.wishlist!.map((prod) => prod.productId);
         const newWishlist: string[] = [];
 
         if (!userWishlist) {

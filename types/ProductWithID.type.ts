@@ -7,3 +7,5 @@ export interface ProductOverviewWithIDType extends ProductOverviewType {
 export interface ProductDetailedWithIDType extends ProductDetailedType {
     _id: string
 }
+
+export type WithIDType<T> = T & { _id: string }
